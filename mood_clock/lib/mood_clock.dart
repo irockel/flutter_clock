@@ -3,7 +3,12 @@ import 'dart:async';
 import 'package:flutter_clock_helper/model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'dart:ui' as ui;
 
+///
+/// Theme color element
+///
 enum _Element {
   background,
   text,
@@ -45,15 +50,26 @@ class _MoodClockState extends State<MoodClock> {
   DateTime _dateTime = DateTime.now();
   Timer _timer;
   String fontFamily = "Poppins";
-  Locale currentLocale;
+  DateFormat dateInfoFormat;
+  Locale userLocale;
 
   @override
   void initState() {
     super.initState();
+
+    // initialize i18n
+    initializeDateFormatting();
+    initUserLocale();
+
     widget.model.addListener(_updateModel);
-    currentLocale = Localizations.localeOf(context);
     _updateTime();
     _updateModel();
+  }
+
+  void initUserLocale() {
+    // workaround as proper init of i18n happens in MaterialApp which is
+    // hidden in flutter_clock_helper
+    userLocale = Locale(ui.window.locale.languageCode, ui.window.locale.countryCode);
   }
 
   @override
@@ -164,7 +180,7 @@ class _MoodClockState extends State<MoodClock> {
                 top: offset,
                 right: offset,
                 child: Text.rich(TextSpan(
-                    text: getDateInfo() + getAmPm(),
+                    text: getDateInfo(context) + getAmPm(),
                     style: TextStyle(
                         fontSize: infoFontSize,
                         fontWeight: FontWeight.normal)))),
@@ -190,11 +206,15 @@ class _MoodClockState extends State<MoodClock> {
         ));
   }
 
+  void initClockAnimation() {
+    
+  }
+
   ///
   /// format date info string, which is displayed at top.
   ///
-  String getDateInfo() {
-    return DateFormat("MMMEd").format(_dateTime);
+  String getDateInfo(BuildContext context) {
+    return DateFormat.MMMEd(userLocale.languageCode).format(_dateTime);
   }
 
   ///

@@ -7,6 +7,9 @@ import 'package:flutter/material.dart';
 
 import 'mood_clock.dart';
 
+///
+/// run clock widget using the ClockCustomizer frame from the flutter clock helper
+///
 void main() {
   // A temporary measure until Platform supports web and TargetPlatform supports
   // macOS.

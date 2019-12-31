@@ -7,11 +7,10 @@ import 'package:intl/intl.dart';
 enum _Element {
   background,
   text,
-  shadow,
 }
 
 ///
-/// theme for light setting in clock model
+/// color theme for light setting in clock model
 ///
 final _lightTheme = {
   _Element.background: Color(0xAAAAAAAA),
@@ -19,11 +18,11 @@ final _lightTheme = {
 };
 
 ///
-/// theme for dark setting in clock model
+/// color theme for dark setting in clock model
 ///
 final _darkTheme = {
   _Element.background: Colors.black,
-  _Element.text: Color(0xF3F3F3F3),
+  _Element.text: Color(0xC3C3C3C3),
 };
 
 ///
@@ -45,6 +44,7 @@ class MoodClock extends StatefulWidget {
 class _MoodClockState extends State<MoodClock> {
   DateTime _dateTime = DateTime.now();
   Timer _timer;
+  String fontFamily = "Poppins";
 
   @override
   void initState() {
@@ -80,73 +80,134 @@ class _MoodClockState extends State<MoodClock> {
   void _updateTime() {
     setState(() {
       _dateTime = DateTime.now();
-      // Update once per minute. If you want to update every second, use the
-      // following code.
-      // _timer = Timer(
-      //   Duration(minutes: 1) -
-      //      Duration(seconds: _dateTime.second) -
-      //       Duration(milliseconds: _dateTime.millisecond),
-      //  _updateTime,
-      // );
 
       // Update once per second, but make sure to do it at the beginning of each
       // new second, so that the clock is accurate.
       _timer = Timer(
-         Duration(seconds: 1) - Duration(milliseconds: _dateTime.millisecond),
-         _updateTime,
+        Duration(seconds: 1) - Duration(milliseconds: _dateTime.millisecond),
+        _updateTime,
       );
     });
   }
 
+  ///
+  /// build the main canvas to display the clock.
+  ///
   @override
   Widget build(BuildContext context) {
+    // set color scheme based on chosen brightness
     final colors = Theme.of(context).brightness == Brightness.light
         ? _lightTheme
         : _darkTheme;
+
+    // image darkener based on chosen brightness.
+    final opacity =
+        Theme.of(context).brightness == Brightness.light ? 0.3 : 0.6;
+
+    // Date format for hour, minute and seconds
     final hour =
         DateFormat(widget.model.is24HourFormat ? 'HH' : 'hh').format(_dateTime);
     final minute = DateFormat('mm').format(_dateTime);
     final second = DateFormat('ss').format(_dateTime);
+
+    // font size for the elements. Calculated based on screen width
     final hourFontSize = MediaQuery.of(context).size.width / 4;
-    final minuteFontSize = MediaQuery.of(context).size.width / 6;
-    final fontSize = MediaQuery.of(context).size.width / 8;
-    final fontFamily = "Poppins";
+    final minuteFontSize = MediaQuery.of(context).size.width / 5;
+    final infoFontSize = MediaQuery.of(context).size.width / 24;
+    final fontSize = MediaQuery.of(context).size.width / 16;
 
+    // offset of elements to margin based on font size
     final offset = fontSize * 0.7;
-    final hourBlock = fontSize * 1.75;
-    final minuteBlock = fontSize * 1.75;
 
+    // define default text style to use in clock setup
     final defaultStyle = TextStyle(
       color: colors[_Element.text],
       fontFamily: fontFamily,
       fontSize: fontSize,
+      fontWeight: FontWeight.w700,
     );
 
-    final hourStyle = TextStyle(
-      color: colors[_Element.text],
-      fontFamily: fontFamily,
-      fontSize: hourFontSize,
-    );
+    // build and return clock display.
+    return DefaultTextStyle(
+        style: defaultStyle,
+        child: Stack(
+          children: <Widget>[
+            Container(
+              //color: colors[_Element.background],
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  colorFilter: new ColorFilter.mode(
+                      Colors.black.withOpacity(opacity), BlendMode.darken),
+                  image: getMoodImage(),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            Positioned(
+              top: offset,
+              left: offset,
+              child: Text.rich(TextSpan(
+                children: [
+                  TextSpan(
+                      text: hour + " ",
+                      style: TextStyle(fontSize: hourFontSize)),
+                  TextSpan(
+                      text: minute + " ",
+                      style: TextStyle(fontSize: minuteFontSize)),
+                  TextSpan(text: second),
+                ],
+              )),
+            ),
+            Positioned(
+                top: offset,
+                right: offset,
+                child: Text.rich(TextSpan(
+                    text: getDateInfo() + getAmPm(),
+                    style: TextStyle(
+                        fontSize: infoFontSize,
+                        fontWeight: FontWeight.normal)))),
+            Positioned(
+                bottom: offset,
+                left: offset,
+                child: Text.rich(TextSpan(
+                    text: widget.model.temperatureString +
+                        "\n" +
+                        widget.model.location,
+                    style: TextStyle(
+                        fontSize: infoFontSize,
+                        fontWeight: FontWeight.normal)))),
+            Positioned(
+                bottom: offset,
+                right: offset,
+                child: Text.rich(TextSpan(
+                    text: widget.model.weatherString,
+                    style: TextStyle(
+                        fontSize: infoFontSize,
+                        fontWeight: FontWeight.normal))))
+          ],
+        ));
+  }
 
-    final minuteStyle = TextStyle(
-      color: colors[_Element.text],
-      fontFamily: fontFamily,
-      fontSize: minuteFontSize,
-    );
-    return Container(
-      color: colors[_Element.background],
-      child: Center(
-        child: DefaultTextStyle(
-          style: defaultStyle,
-          child: Stack(
-            children: <Widget>[
-              Positioned(left: offset, bottom: 100, child: Text(hour, style: hourStyle)),
-              Positioned(left: offset + hourBlock, bottom: 100, child: Text(minute, style: minuteStyle)),
-              Positioned(left: offset + hourBlock + minuteBlock, bottom: 100, child: Text(second)),
-            ],
-          ),
-        ),
-      ),
-    );
+  ///
+  /// format date info string, which is displayed at top.
+  ///
+  String getDateInfo() {
+    return DateFormat.MMMEd().format(_dateTime);
+  }
+
+  ///
+  /// determine if either am, pm or nothing needs to be displayed
+  ///
+  String getAmPm() {
+    return (widget.model.is24HourFormat
+        ? ""
+        : _dateTime.hour >= 12 ? "\npm" : "\nam");
+  }
+
+  ///
+  /// get mood image based on chosen weather conditions aka 'mood'
+  ///
+  AssetImage getMoodImage() {
+    return AssetImage("assets/" + widget.model.weatherString + "-mood.jpg");
   }
 }

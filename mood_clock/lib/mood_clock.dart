@@ -45,11 +45,13 @@ class _MoodClockState extends State<MoodClock> {
   DateTime _dateTime = DateTime.now();
   Timer _timer;
   String fontFamily = "Poppins";
+  Locale currentLocale;
 
   @override
   void initState() {
     super.initState();
     widget.model.addListener(_updateModel);
+    currentLocale = Localizations.localeOf(context);
     _updateTime();
     _updateModel();
   }
@@ -177,13 +179,13 @@ class _MoodClockState extends State<MoodClock> {
                         fontSize: infoFontSize,
                         fontWeight: FontWeight.normal)))),
             Positioned(
-                bottom: offset,
-                right: offset,
-                child: Text.rich(TextSpan(
-                    text: widget.model.weatherString,
-                    style: TextStyle(
-                        fontSize: infoFontSize,
-                        fontWeight: FontWeight.normal))))
+              bottom: offset,
+              right: offset,
+              child: Image(
+                  color: colors[_Element.text],
+                  image: getMoodIcon()
+              ),
+            )
           ],
         ));
   }
@@ -192,7 +194,7 @@ class _MoodClockState extends State<MoodClock> {
   /// format date info string, which is displayed at top.
   ///
   String getDateInfo() {
-    return DateFormat.MMMEd().format(_dateTime);
+    return DateFormat("MMMEd").format(_dateTime);
   }
 
   ///
@@ -209,5 +211,12 @@ class _MoodClockState extends State<MoodClock> {
   ///
   AssetImage getMoodImage() {
     return AssetImage("assets/" + widget.model.weatherString + "-mood.jpg");
+  }
+
+  ///
+  /// get mood image based on chosen weather conditions aka 'mood'
+  ///
+  AssetImage getMoodIcon() {
+    return AssetImage("assets/" + widget.model.weatherString + "-icon.png");
   }
 }

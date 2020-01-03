@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -21,19 +22,29 @@ class ClockDisplay extends StatelessWidget {
     // Date format for hour, minute and seconds
     final hour = DateFormat(this.is24HourFormat ? 'HH' : 'hh').format(dateTime);
     final minute = DateFormat('mm').format(dateTime);
-    final second = DateFormat('ss').format(dateTime);
+    final second = dateTime.second; //DateFormat('ss').format(dateTime);
+    final showFirst = dateTime.second % 2 == 0;
+    final oldSecond = second -1;
 
-    return Text.rich(TextSpan(
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.baseline,
+      textBaseline: TextBaseline.ideographic,
       children: [
-        TextSpan(
-            text: hour + " ",
-            style: TextStyle(fontSize: hourFontSize)),
-        TextSpan(
-            text: minute + " ",
-            style: TextStyle(fontSize: minuteFontSize)),
-        TextSpan(text: second),
+        Text(hour + " ",
+            style: TextStyle(fontSize: hourFontSize),
+            ),
+        Text(minute + " ",
+            style: TextStyle(fontSize: minuteFontSize),
+            ),
+        AnimatedCrossFade(duration: const Duration(seconds: 1),
+          firstChild: showFirst ? Text("$second") : Text("$oldSecond"),
+          secondChild: showFirst ? Text("$oldSecond") : Text("$second"),
+          crossFadeState: showFirst ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+          firstCurve: Curves.easeInOut,
+          secondCurve: Curves.easeInOut,),
+
       ],
-    ));
+    );
   }
 
 }

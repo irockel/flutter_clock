@@ -6,6 +6,8 @@ import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'dart:ui' as ui;
 
+import 'package:mood_clock/clock_display.dart';
+
 ///
 /// Theme color element
 ///
@@ -122,15 +124,7 @@ class _MoodClockState extends State<MoodClock> {
     final opacity =
         Theme.of(context).brightness == Brightness.light ? 0.3 : 0.6;
 
-    // Date format for hour, minute and seconds
-    final hour =
-        DateFormat(widget.model.is24HourFormat ? 'HH' : 'hh').format(_dateTime);
-    final minute = DateFormat('mm').format(_dateTime);
-    final second = DateFormat('ss').format(_dateTime);
-
     // font size for the elements. Calculated based on screen width
-    final hourFontSize = MediaQuery.of(context).size.width / 4;
-    final minuteFontSize = MediaQuery.of(context).size.width / 5;
     final infoFontSize = MediaQuery.of(context).size.width / 24;
     final fontSize = MediaQuery.of(context).size.width / 16;
 
@@ -164,17 +158,7 @@ class _MoodClockState extends State<MoodClock> {
             Positioned(
               top: offset,
               left: offset,
-              child: Text.rich(TextSpan(
-                children: [
-                  TextSpan(
-                      text: hour + " ",
-                      style: TextStyle(fontSize: hourFontSize)),
-                  TextSpan(
-                      text: minute + " ",
-                      style: TextStyle(fontSize: minuteFontSize)),
-                  TextSpan(text: second),
-                ],
-              )),
+              child: ClockDisplay(widget.model.is24HourFormat),
             ),
             Positioned(
                 top: offset,

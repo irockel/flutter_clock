@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'dart:ui' as ui;
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:mood_clock/clock_display.dart';
+import 'package:mood_clock/mood_background.dart';
 
 ///
 /// Theme color element
@@ -91,12 +93,18 @@ class _MoodClockState extends State<MoodClock> {
     super.dispose();
   }
 
+  ///
+  /// triggers if any changes happen to the model, e.g. weather state, clock settings.
+  ///
   void _updateModel() {
     setState(() {
       // Cause the clock to rebuild when the model changes.
     });
   }
 
+  ///
+  /// control the timer to update the clock display
+  ///
   void _updateTime() {
     setState(() {
       _dateTime = DateTime.now();
@@ -144,17 +152,7 @@ class _MoodClockState extends State<MoodClock> {
         style: defaultStyle,
         child: Stack(
           children: <Widget>[
-            Container(
-              //color: colors[_Element.background],
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  colorFilter: new ColorFilter.mode(
-                      Colors.black.withOpacity(opacity), BlendMode.darken),
-                  image: getMoodImage(),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
+            MoodBackground(mood: widget.model.weatherString, opacity: opacity),
             Positioned(
               top: offset,
               left: offset,
@@ -164,7 +162,7 @@ class _MoodClockState extends State<MoodClock> {
                 top: offset,
                 right: offset,
                 child: Text.rich(TextSpan(
-                    text: getDateInfo(context) + getAmPm(),
+                    text: "${DateFormat.MMMEd(userLocale.languageCode).format(_dateTime)}\n${getAmPm()}",
                     style: TextStyle(
                         fontSize: infoFontSize,
                         fontWeight: FontWeight.normal)))),
@@ -190,31 +188,13 @@ class _MoodClockState extends State<MoodClock> {
         ));
   }
 
-  void initClockAnimation() {
-    
-  }
-
-  ///
-  /// format date info string, which is displayed at top.
-  ///
-  String getDateInfo(BuildContext context) {
-    return DateFormat.MMMEd(userLocale.languageCode).format(_dateTime);
-  }
-
   ///
   /// determine if either am, pm or nothing needs to be displayed
   ///
   String getAmPm() {
     return (widget.model.is24HourFormat
         ? ""
-        : _dateTime.hour >= 12 ? "\npm" : "\nam");
-  }
-
-  ///
-  /// get mood image based on chosen weather conditions aka 'mood'
-  ///
-  AssetImage getMoodImage() {
-    return AssetImage("assets/" + widget.model.weatherString + "-mood.jpg");
+        : _dateTime.hour >= 12 ? "pm" : "am");
   }
 
   ///

@@ -5,10 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'dart:ui' as ui;
-import 'package:google_fonts/google_fonts.dart';
 
 import 'package:mood_clock/clock_display.dart';
 import 'package:mood_clock/mood_background.dart';
+import 'package:mood_clock/quote_text.dart';
+import 'package:mood_clock/quotes.dart';
 
 ///
 /// Theme color element
@@ -51,11 +52,24 @@ class MoodClock extends StatefulWidget {
 /// State for the mood clock, has the clock timer.
 ///
 class _MoodClockState extends State<MoodClock> {
+  // time reference for the clock display.
   DateTime _dateTime = DateTime.now();
+
+  // Timer for updating the clock
   Timer _timer;
+
+  // Font family used throughout the clock, despite the quote display
   String fontFamily = "Poppins";
+
+  // date format for the date info panel, which uses a localized
+  // date display.
   DateFormat dateInfoFormat;
+
+  // stores determined user locale.
   Locale userLocale;
+
+  // Stores the currently display quote, only updates on change of model
+  Quote currentQuote;
 
   @override
   void initState() {
@@ -99,6 +113,7 @@ class _MoodClockState extends State<MoodClock> {
   void _updateModel() {
     setState(() {
       // Cause the clock to rebuild when the model changes.
+      currentQuote = Quotes().randomQuote(widget.model.weatherString);
     });
   }
 
@@ -133,7 +148,7 @@ class _MoodClockState extends State<MoodClock> {
         Theme.of(context).brightness == Brightness.light ? 0.3 : 0.6;
 
     // font size for the elements. Calculated based on screen width
-    final infoFontSize = MediaQuery.of(context).size.width / 24;
+    final infoFontSize = MediaQuery.of(context).size.width / 27;
     final fontSize = MediaQuery.of(context).size.width / 16;
 
     // offset of elements to margin based on font size
@@ -145,6 +160,13 @@ class _MoodClockState extends State<MoodClock> {
       fontFamily: fontFamily,
       fontSize: fontSize,
       fontWeight: FontWeight.w700,
+      shadows: <Shadow>[
+        Shadow(
+          offset: Offset(2.0, 2.0),
+          blurRadius: 1.0,
+          color: Color.fromARGB(255, 0, 0, 0),
+        ),
+      ],
     );
 
     // build and return clock display.
@@ -169,19 +191,23 @@ class _MoodClockState extends State<MoodClock> {
             Positioned(
                 bottom: offset,
                 left: offset,
-                child: Text.rich(TextSpan(
-                    text: widget.model.temperatureString +
-                        "\n" +
-                        widget.model.location,
-                    style: TextStyle(
-                        fontSize: infoFontSize,
-                        fontWeight: FontWeight.normal)))),
+                child: QuoteText(infoFontSize, currentQuote),//QuoteWidget(mood: widget.model.weatherString),
+            ),
             Positioned(
               bottom: offset,
               right: offset,
-              child: Image(
-                  color: colors[_Element.text],
-                  image: getMoodIcon()
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: <Widget>[
+                  Text(widget.model.temperatureString, style: TextStyle(
+                      fontSize: infoFontSize,
+                      fontWeight: FontWeight.normal)),
+                  SizedBox(height: 5),
+                  Image(
+                      color: colors[_Element.text],
+                      image: getMoodIcon()
+                  ),
+                ],
               ),
             )
           ],

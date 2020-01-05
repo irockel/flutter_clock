@@ -81,18 +81,10 @@ class _MoodClockState extends State<MoodClock> {
 
     // initialize i18n
     initializeDateFormatting();
-    initUserLocale();
 
     widget.model.addListener(_updateModel);
     _updateTime();
     _updateModel();
-  }
-
-  void initUserLocale() {
-    // workaround as proper init of i18n happens in MaterialApp which is
-    // hidden in flutter_clock_helper
-    userLocale =
-        Locale(ui.window.locale.languageCode, ui.window.locale.countryCode);
   }
 
   @override
@@ -143,6 +135,9 @@ class _MoodClockState extends State<MoodClock> {
   ///
   @override
   Widget build(BuildContext context) {
+    // initialize the locale
+    Locale userLocale = Locale(ui.window.locale.languageCode, ui.window.locale.countryCode);
+
     // set color scheme based on chosen brightness
     final colors = Theme.of(context).brightness == Brightness.light
         ? _lightTheme
@@ -190,7 +185,7 @@ class _MoodClockState extends State<MoodClock> {
                 right: offset,
                 child: Text.rich(TextSpan(
                     text:
-                        "${DateFormat.MMMEd(userLocale.languageCode).format(_dateTime)}\n${getAmPm()}",
+                        "${DateFormat.MMMEd(userLocale.languageCode).format(_dateTime)}\n${_getAmPm()}",
                     style: TextStyle(
                         fontSize: infoFontSize,
                         fontWeight: FontWeight.normal)))),
@@ -211,7 +206,7 @@ class _MoodClockState extends State<MoodClock> {
                           fontSize: infoFontSize,
                           fontWeight: FontWeight.normal)),
                   SizedBox(height: 5),
-                  Image(color: colors[_Element.text], image: getMoodIcon()),
+                  Image(color: colors[_Element.text], image: _getMoodIcon()),
                 ],
               ),
             )
@@ -222,7 +217,7 @@ class _MoodClockState extends State<MoodClock> {
   ///
   /// determine if either am, pm or nothing needs to be displayed
   ///
-  String getAmPm() {
+  String _getAmPm() {
     return (widget.model.is24HourFormat
         ? ""
         : _dateTime.hour >= 12 ? "pm" : "am");
@@ -231,7 +226,7 @@ class _MoodClockState extends State<MoodClock> {
   ///
   /// get mood image based on chosen weather conditions aka 'mood'
   ///
-  AssetImage getMoodIcon() {
+  AssetImage _getMoodIcon() {
     return AssetImage("assets/" + widget.model.weatherString + "-icon.png");
   }
 }

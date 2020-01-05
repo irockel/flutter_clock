@@ -9,6 +9,9 @@ import 'mood_clock.dart';
 
 ///
 /// run clock widget using the ClockCustomizer frame from the flutter clock helper
+/// Localized based on the language code as fetched from the dart:ui package.
+/// As MaterialApp is inside clock_helper which can't be modified, only basic
+/// localization right now.
 ///
 void main() {
   // A temporary measure until Platform supports web and TargetPlatform supports

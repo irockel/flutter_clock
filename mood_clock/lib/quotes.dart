@@ -4,6 +4,9 @@ import 'dart:ui' as ui;
 ///
 /// Stores quotes from known people which refer to the weather moods.
 /// Supports English and German.
+/// Localized based on the language code as fetched from the dart:ui package.
+/// As MaterialApp is inside clock_helper which can't be modified, only basic
+/// localization right now.
 ///
 class Quotes {
   final quotes = {
@@ -161,9 +164,16 @@ class Quotes {
   /// clock model
   ///
   Quote randomQuote(String mood) {
-    List quoteList = quotes[ui.window.locale.languageCode][mood];
+    List quoteList = quotes[_languageCode()][mood];
     int randomQuoteIndex = Random().nextInt(quoteList.length);
     return quoteList[randomQuoteIndex];
+  }
+
+  ///
+  /// only english and german are supported right now.
+  ///
+  String _languageCode() {
+    return ui.window.locale.languageCode == "de" ? "de" : "en";
   }
 }
 

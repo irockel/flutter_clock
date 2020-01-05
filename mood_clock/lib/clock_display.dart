@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -20,7 +19,9 @@ class ClockDisplay extends StatelessWidget {
     final minuteFontSize = MediaQuery.of(context).size.width / 5;
 
     // Date format for hour, minute and seconds
-    final hours = DateFormat(this.is24HourFormat ? 'HH' : 'hh').format(dateTime).split('');
+    final hours = DateFormat(this.is24HourFormat ? 'HH' : 'hh')
+        .format(dateTime)
+        .split('');
     final minutes = DateFormat('mm').format(dateTime).split('');
     final seconds = DateFormat('ss').format(dateTime).split('');
 
@@ -28,11 +29,15 @@ class ClockDisplay extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.baseline,
       textBaseline: TextBaseline.ideographic,
       children: [
-        ClockDisplayDigit(digit: hours[0], style: new TextStyle(fontSize: hourFontSize)),
-        ClockDisplayDigit(digit: hours[1], style: new TextStyle(fontSize: hourFontSize)),
+        ClockDisplayDigit(
+            digit: hours[0], style: new TextStyle(fontSize: hourFontSize)),
+        ClockDisplayDigit(
+            digit: hours[1], style: new TextStyle(fontSize: hourFontSize)),
         SizedBox(width: 30),
-        ClockDisplayDigit(digit: minutes[0], style: new TextStyle(fontSize: minuteFontSize)),
-        ClockDisplayDigit(digit: minutes[1], style: new TextStyle(fontSize: minuteFontSize)),
+        ClockDisplayDigit(
+            digit: minutes[0], style: new TextStyle(fontSize: minuteFontSize)),
+        ClockDisplayDigit(
+            digit: minutes[1], style: new TextStyle(fontSize: minuteFontSize)),
         SizedBox(width: 30),
         ClockDisplayDigit(digit: seconds[0]),
         ClockDisplayDigit(digit: seconds[1]),

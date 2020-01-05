@@ -1,15 +1,21 @@
-# Flutter Clock
+# Mood Clock
 
-Welcome to Flutter Clock!
+![mood_clock](mood_clock.gif)
 
-See [flutter.dev/clock](https://flutter.dev/clock) for how to get started, submission requirements, contest rules, and FAQs.
+A clock for the Lenovo Smart Clock based on the weather mood. 
+Shows background images and popular quotes based on the current weather conditions.
 
-See a [live demo](https://maryx.github.io/flutter_clock) with Flutter for Web!
+Features:
+* Background images based on the weather conditions
+* Popular quotes also based on the weather conditions
+* Animated digital clock  
+* Also shows date, current temperature and icon representing weather conditions
 
-Example [Analog Clock](analog_clock)
+The clock is build using **[Flutter](http://flutter.dev)**.
 
-<img src='analog_clock/analog.gif' width='350'>
+Background images are taken from [Pexels](https://www.pexels.com/search/landscape/) 
+which offers free to use images.
 
-Example [Digital Clock](digital_clock)
+Contains free to use weather icons from https://www.iconfinder.com/Makoto_msk.
 
-<img src='digital_clock/digital.gif' width='350'>
+Released as open source. For License, see [LICENSE](LICENSE) file.

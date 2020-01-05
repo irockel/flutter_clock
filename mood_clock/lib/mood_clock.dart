@@ -1,10 +1,11 @@
 import 'dart:async';
+import 'dart:ui' as ui;
 
-import 'package:flutter_clock_helper/model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'dart:ui' as ui;
+
+import 'package:flutter_clock_helper/model.dart';
 
 import 'package:mood_clock/clock_display.dart';
 import 'package:mood_clock/mood_background.dart';
@@ -50,6 +51,9 @@ class MoodClock extends StatefulWidget {
 
 ///
 /// State for the mood clock, has the clock timer.
+/// Localized based on the language code as fetched from the dart:ui package.
+/// As MaterialApp is inside clock_helper which can't be modified, only basic
+/// localization right now.
 ///
 class _MoodClockState extends State<MoodClock> {
   // time reference for the clock display.
@@ -87,7 +91,8 @@ class _MoodClockState extends State<MoodClock> {
   void initUserLocale() {
     // workaround as proper init of i18n happens in MaterialApp which is
     // hidden in flutter_clock_helper
-    userLocale = Locale(ui.window.locale.languageCode, ui.window.locale.countryCode);
+    userLocale =
+        Locale(ui.window.locale.languageCode, ui.window.locale.countryCode);
   }
 
   @override
@@ -184,14 +189,16 @@ class _MoodClockState extends State<MoodClock> {
                 top: offset,
                 right: offset,
                 child: Text.rich(TextSpan(
-                    text: "${DateFormat.MMMEd(userLocale.languageCode).format(_dateTime)}\n${getAmPm()}",
+                    text:
+                        "${DateFormat.MMMEd(userLocale.languageCode).format(_dateTime)}\n${getAmPm()}",
                     style: TextStyle(
                         fontSize: infoFontSize,
                         fontWeight: FontWeight.normal)))),
             Positioned(
-                bottom: offset,
-                left: offset,
-                child: QuoteText(infoFontSize, currentQuote),//QuoteWidget(mood: widget.model.weatherString),
+              bottom: offset,
+              left: offset,
+              child: QuoteText(infoFontSize,
+                  currentQuote), //QuoteWidget(mood: widget.model.weatherString),
             ),
             Positioned(
               bottom: offset,
@@ -199,14 +206,12 @@ class _MoodClockState extends State<MoodClock> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
-                  Text(widget.model.temperatureString, style: TextStyle(
-                      fontSize: infoFontSize,
-                      fontWeight: FontWeight.normal)),
+                  Text(widget.model.temperatureString,
+                      style: TextStyle(
+                          fontSize: infoFontSize,
+                          fontWeight: FontWeight.normal)),
                   SizedBox(height: 5),
-                  Image(
-                      color: colors[_Element.text],
-                      image: getMoodIcon()
-                  ),
+                  Image(color: colors[_Element.text], image: getMoodIcon()),
                 ],
               ),
             )

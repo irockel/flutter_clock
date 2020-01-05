@@ -16,7 +16,6 @@ class MoodBackground extends StatefulWidget {
 }
 
 class _MoodBackgroundState extends State<MoodBackground> {
-  
   @override
   void initState() {
     super.initState();

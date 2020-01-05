@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mood_clock/quotes.dart';
 
+///
+/// displays the passed 'Quote', uses an AnimatedSwitcher
+/// for changing the quote with the quote text as value key
+///
 class QuoteText extends StatelessWidget {
   final Quote quote;
   final double fontSize;
@@ -14,7 +18,7 @@ class QuoteText extends StatelessWidget {
     TextStyle quoteStyle = GoogleFonts.dancingScript(
         fontSize: MediaQuery.of(context).size.width / 29);
     TextStyle authorStyle = GoogleFonts.barlowCondensed(
-        fontSize: MediaQuery.of(context).size.width / 30);
+        fontSize: MediaQuery.of(context).size.width / 31);
 
     return AnimatedSwitcher(
         duration: const Duration(milliseconds: 300),

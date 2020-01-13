@@ -4,20 +4,10 @@ import 'package:flutter/material.dart';
 /// controls the mood background based on the passed mood string lays a black
 /// colored layer with the given opacity on top of the displayed image.
 ///
-class MoodBackground extends StatefulWidget {
+class MoodBackground extends StatelessWidget {
   final String mood;
 
   MoodBackground({this.mood});
-
-  @override
-  State<StatefulWidget> createState() => _MoodBackgroundState();
-}
-
-class _MoodBackgroundState extends State<MoodBackground> {
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +18,7 @@ class _MoodBackgroundState extends State<MoodBackground> {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 500),
       child: Container(
-        key: ValueKey(widget.mood),
+        key: ValueKey(mood),
         decoration: BoxDecoration(
           image: DecorationImage(
             colorFilter: new ColorFilter.mode(
@@ -45,6 +35,6 @@ class _MoodBackgroundState extends State<MoodBackground> {
   /// get mood image based on chosen weather conditions aka 'mood'
   ///
   AssetImage _moodImage() {
-    return AssetImage("assets/${widget.mood}-mood.jpg");
+    return AssetImage("assets/$mood-mood.jpg");
   }
 }

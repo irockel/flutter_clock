@@ -23,8 +23,9 @@ class Quotes {
       ],
       "rainy": [
         Quote(
-            "\"A bank is a place where they lend you an umbrella\n"
-                "in fair weather and ask for it back\nwhen it begins to rain.\"",
+            "\"A bank is a place where they lend you an\n"
+                "umbrella in fair weather and ask for it back\n"
+                "when it begins to rain.\"",
             "Robert Frost"),
         Quote("\"Climate is what we expect, weather is what we get.\"",
             "Mark Twain"),
@@ -110,8 +111,8 @@ class Quotes {
       ],
       "foggy": [
         Quote(
-            "\"Wahrheit ist eine Fackel, die durch den Nebel leuchtet,\n"
-                "ohne ihn zu vertreiben.\"",
+            "\"Wahrheit ist eine Fackel, die durch den Nebel\n"
+                "leuchtet, ohne ihn zu vertreiben.\"",
             "Claude Adrien Helvetius"),
       ],
       "thunderstorm": [

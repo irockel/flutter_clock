@@ -11,30 +11,7 @@ import 'package:mood_clock/clock_display.dart';
 import 'package:mood_clock/mood_background.dart';
 import 'package:mood_clock/quote_text.dart';
 import 'package:mood_clock/quotes.dart';
-
-///
-/// Theme color element
-///
-enum _Element {
-  background,
-  text,
-}
-
-///
-/// color theme for light setting in clock model
-///
-final _lightTheme = {
-  _Element.background: Color(0xAAAAAAAA),
-  _Element.text: Color(0xF3F3F3F3),
-};
-
-///
-/// color theme for dark setting in clock model
-///
-final _darkTheme = {
-  _Element.background: Colors.black,
-  _Element.text: Color(0xC3C3C3C3),
-};
+import 'package:mood_clock/theme_factory.dart';
 
 ///
 /// Mood Clock Widget, displays a digital clock with a weather mood
@@ -59,21 +36,11 @@ class _MoodClockState extends State<MoodClock> {
   // time reference for the clock display.
   DateTime _dateTime = DateTime.now();
 
-  // Timer for updating the clock
+  // Timer for updating the clock.
   Timer _timer;
 
-  // Font family used throughout the clock, despite the quote display
-  String fontFamily = "Poppins";
-
-  // date format for the date info panel, which uses a localized
-  // date display.
-  DateFormat dateInfoFormat;
-
-  // stores determined user locale.
-  Locale userLocale;
-
-  // Stores the currently display quote, only updates on change of model
-  Quote currentQuote;
+  // Stores the currently display quote, only updates on change of model.
+  Quote _currentQuote;
 
   @override
   void initState() {
@@ -105,17 +72,18 @@ class _MoodClockState extends State<MoodClock> {
   }
 
   ///
-  /// triggers if any changes happen to the model, e.g. weather state, clock settings.
+  /// triggers if any changes happen to the model, e.g. weather state, clock
+  /// settings.
   ///
   void _updateModel() {
     setState(() {
       // Cause the clock to rebuild when the model changes.
-      currentQuote = Quotes().randomQuote(widget.model.weatherString);
+      _currentQuote = Quotes().randomQuote(widget.model.weatherString);
     });
   }
 
   ///
-  /// control the timer to update the clock display
+  /// control the timer to update the clock display.
   ///
   void _updateTime() {
     setState(() {
@@ -135,78 +103,44 @@ class _MoodClockState extends State<MoodClock> {
   ///
   @override
   Widget build(BuildContext context) {
-    // initialize the locale
-    Locale userLocale = Locale(ui.window.locale.languageCode, ui.window.locale.countryCode);
-
-    // set color scheme based on chosen brightness
-    final colors = Theme.of(context).brightness == Brightness.light
-        ? _lightTheme
-        : _darkTheme;
-
-    // image darkener based on chosen brightness.
-    final opacity =
-        Theme.of(context).brightness == Brightness.light ? 0.3 : 0.6;
-
-    // font size for the elements. Calculated based on screen width
-    final infoFontSize = MediaQuery.of(context).size.width / 27;
-    final fontSize = MediaQuery.of(context).size.width / 16;
-
-    // offset of elements to margin based on font size
-    final offset = fontSize * 0.7;
-
     // define default text style to use in clock setup
-    final defaultStyle = TextStyle(
-      color: colors[_Element.text],
-      fontFamily: fontFamily,
-      fontSize: fontSize,
-      fontWeight: FontWeight.w700,
-      shadows: <Shadow>[
-        Shadow(
-          offset: Offset(2.0, 2.0),
-          blurRadius: 1.0,
-          color: Color.fromARGB(255, 0, 0, 0),
-        ),
-      ],
-    );
+    final defaultStyle = ThemeFactory.defaultStyle(context);
 
     // build and return clock display.
     return DefaultTextStyle(
         style: defaultStyle,
         child: Stack(
           children: <Widget>[
-            MoodBackground(mood: widget.model.weatherString, opacity: opacity),
+            MoodBackground(mood: widget.model.weatherString),
             Positioned(
-              top: offset,
-              left: offset,
+              top: ThemeFactory.offset(context),
+              left: ThemeFactory.offset(context),
               child: ClockDisplay(widget.model.is24HourFormat),
             ),
             Positioned(
-                top: offset,
-                right: offset,
+                top: ThemeFactory.offset(context),
+                right: ThemeFactory.offset(context),
                 child: Text.rich(TextSpan(
-                    text:
-                        "${DateFormat.MMMEd(userLocale.languageCode).format(_dateTime)}\n${_getAmPm()}",
-                    style: TextStyle(
-                        fontSize: infoFontSize,
-                        fontWeight: FontWeight.normal)))),
+                    text: _infoText(),
+                    style: ThemeFactory.infoTextStyle(context)))),
             Positioned(
-              bottom: offset,
-              left: offset,
-              child: QuoteText(infoFontSize,
-                  currentQuote), //QuoteWidget(mood: widget.model.weatherString),
+              bottom: ThemeFactory.offset(context),
+              left: ThemeFactory.offset(context),
+              child: QuoteText(_currentQuote),
             ),
             Positioned(
-              bottom: offset,
-              right: offset,
+              bottom: ThemeFactory.offset(context),
+              right: ThemeFactory.offset(context),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
                   Text(widget.model.temperatureString,
-                      style: TextStyle(
-                          fontSize: infoFontSize,
-                          fontWeight: FontWeight.normal)),
+                      style: ThemeFactory.infoTextStyle(context)),
                   SizedBox(height: 5),
-                  Image(color: colors[_Element.text], image: _getMoodIcon()),
+                  Image(
+                      color:
+                          ThemeFactory.colors(context)[ColorThemeElement.text],
+                      image: _moodIcon()),
                 ],
               ),
             )
@@ -215,18 +149,23 @@ class _MoodClockState extends State<MoodClock> {
   }
 
   ///
-  /// determine if either am, pm or nothing needs to be displayed
+  /// displays the info text with current date and determines if either am, pm
+  /// or nothing needs to be displayed.
   ///
-  String _getAmPm() {
-    return (widget.model.is24HourFormat
-        ? ""
-        : _dateTime.hour >= 12 ? "pm" : "am");
+  String _infoText() {
+    Locale userLocale =
+        Locale(ui.window.locale.languageCode, ui.window.locale.countryCode);
+    final amPm =
+        (widget.model.is24HourFormat ? "" : _dateTime.hour >= 12 ? "pm" : "am");
+
+    return "${DateFormat.MMMEd(userLocale.languageCode).format(_dateTime)}"
+        "\n$amPm";
   }
 
   ///
   /// get mood image based on chosen weather conditions aka 'mood'
   ///
-  AssetImage _getMoodIcon() {
-    return AssetImage("assets/" + widget.model.weatherString + "-icon.png");
+  AssetImage _moodIcon() {
+    return AssetImage("assets/${widget.model.weatherString}-icon.png");
   }
 }

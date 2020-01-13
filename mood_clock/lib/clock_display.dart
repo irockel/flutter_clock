@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'package:mood_clock/theme_factory.dart';
+
 ///
 /// encapsulates just the time presentation, is stateless and has to
-/// be updated from the outside. As a timer is needed for different
-/// elements there's no use in having its own.
+/// be updated from the outside. As a timer is needed for other elements
+/// also, there's no use in having its own.
 ///
 class ClockDisplay extends StatelessWidget {
   final bool is24HourFormat;
@@ -14,9 +16,6 @@ class ClockDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     DateTime dateTime = DateTime.now();
-
-    final hourFontSize = MediaQuery.of(context).size.width / 4;
-    final minuteFontSize = MediaQuery.of(context).size.width / 5;
 
     // Date format for hour, minute and seconds
     final hours = DateFormat(this.is24HourFormat ? 'HH' : 'hh')
@@ -30,14 +29,14 @@ class ClockDisplay extends StatelessWidget {
       textBaseline: TextBaseline.ideographic,
       children: [
         ClockDisplayDigit(
-            digit: hours[0], style: new TextStyle(fontSize: hourFontSize)),
+            digit: hours[0], style: ThemeFactory.hourStyle(context)),
         ClockDisplayDigit(
-            digit: hours[1], style: new TextStyle(fontSize: hourFontSize)),
+            digit: hours[1], style: ThemeFactory.hourStyle(context)),
         SizedBox(width: 30),
         ClockDisplayDigit(
-            digit: minutes[0], style: new TextStyle(fontSize: minuteFontSize)),
+            digit: minutes[0], style: ThemeFactory.minuteStyle(context)),
         ClockDisplayDigit(
-            digit: minutes[1], style: new TextStyle(fontSize: minuteFontSize)),
+            digit: minutes[1], style: ThemeFactory.minuteStyle(context)),
         SizedBox(width: 30),
         ClockDisplayDigit(digit: seconds[0]),
         ClockDisplayDigit(digit: seconds[1]),

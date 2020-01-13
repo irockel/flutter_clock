@@ -9,7 +9,7 @@ import 'dart:ui' as ui;
 /// localization right now.
 ///
 class Quotes {
-  final quotes = {
+  final _quotes = {
     //
     // English quotes
     //
@@ -147,8 +147,8 @@ class Quotes {
       ],
       "snowy": [
         Quote(
-            "\"Die Lüge ist wie ein Schneeball: Je länger man ihn wälzt,\n"
-                "desto größer wird er.\"",
+            "\"Die Lüge ist wie ein Schneeball: Je länger man\n"
+                "ihn wälzt, desto größer wird er.\"",
             "Martin Luther"),
         Quote(
             "\"Ein guter Rat ist wie Schnee. Je sanfter er fällt,\n"
@@ -164,13 +164,14 @@ class Quotes {
   /// clock model
   ///
   Quote randomQuote(String mood) {
-    List quoteList = quotes[_languageCode()][mood];
+    List quoteList = _quotes[_languageCode()][mood];
     int randomQuoteIndex = Random().nextInt(quoteList.length);
     return quoteList[randomQuoteIndex];
   }
 
   ///
-  /// only english and german are supported right now.
+  /// only english and german are supported right now. If language
+  /// of devices is not german, use english.
   ///
   String _languageCode() {
     return ui.window.locale.languageCode == "de" ? "de" : "en";
@@ -178,8 +179,7 @@ class Quotes {
 }
 
 ///
-/// a quote consisting of the text (might have line feeds) and
-/// the author
+/// a quote consists of the text (might have line feeds) and the author.
 ///
 class Quote {
   final String text;

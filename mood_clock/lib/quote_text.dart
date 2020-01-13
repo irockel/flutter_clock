@@ -1,26 +1,18 @@
 import 'package:flutter/material.dart';
 
-import 'package:google_fonts/google_fonts.dart';
-
 import 'package:mood_clock/quotes.dart';
+import 'package:mood_clock/theme_factory.dart';
 
 ///
-/// displays the passed 'Quote', uses an AnimatedSwitcher
-/// for changing the quote with the quote text as value key
+/// displays the passed 'Quote', uses an AnimatedSwitcher for changing the
+/// quote with the quote text as value key.
 ///
 class QuoteText extends StatelessWidget {
   final Quote quote;
-  final double fontSize;
-
-  QuoteText(this.fontSize, this.quote);
+  QuoteText(this.quote);
 
   @override
   Widget build(BuildContext context) {
-    TextStyle quoteStyle = GoogleFonts.dancingScript(
-        fontSize: MediaQuery.of(context).size.width / 29);
-    TextStyle authorStyle = GoogleFonts.barlowCondensed(
-        fontSize: MediaQuery.of(context).size.width / 31);
-
     return AnimatedSwitcher(
         duration: const Duration(milliseconds: 300),
         transitionBuilder: (Widget child, Animation<double> animation) {
@@ -33,9 +25,9 @@ class QuoteText extends StatelessWidget {
           key: ValueKey(quote.text),
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
-            Text(quote.text, style: quoteStyle),
+            Text(quote.text, style: ThemeFactory.quoteStyle(context)),
             SizedBox(height: 5),
-            Text(quote.author, style: authorStyle),
+            Text(quote.author, style: ThemeFactory.quoteAuthorStyle(context)),
           ],
         ));
   }

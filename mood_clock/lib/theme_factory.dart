@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:google_fonts/google_fonts.dart';
-
 ///
 /// Theme color element
 ///
@@ -19,10 +17,14 @@ enum ColorThemeElement {
 ///
 class ThemeFactory {
   // Font family used throughout the clock, despite the quote display
-  static String fontFamily = "Poppins";
+  static String _fontFamily = "Poppins";
+  // Quote font
+  static String _quoteFontFamily = "DancingScript";
+  // Font for the quote author
+  static String _quoteAuthorFontFamily = "BarlowCondensed";
 
   ///
-  /// color theme for light setting in clock model
+  /// Color theme for light setting in clock model
   ///
   static final _lightTheme = {
     ColorThemeElement.background: Color(0xAAAAAAAA),
@@ -30,7 +32,7 @@ class ThemeFactory {
   };
 
   ///
-  /// color theme for dark setting in clock model
+  /// Color theme for dark setting in clock model
   ///
   static final _darkTheme = {
     ColorThemeElement.background: Colors.black,
@@ -38,7 +40,7 @@ class ThemeFactory {
   };
 
   ///
-  /// colors based on set brightness level.
+  /// Colors based on set brightness level.
   ///
   static Map<ColorThemeElement, Color> colors(BuildContext context) {
     return Theme.of(context).brightness == Brightness.light
@@ -47,7 +49,7 @@ class ThemeFactory {
   }
 
   ///
-  /// default text style to be used in the clock display. The other text style
+  /// Default text style to be used in the clock display. The other text style
   /// inherit from this text style and only modify the text size or
   /// in case of the quote part the used font family.
   ///
@@ -56,7 +58,7 @@ class ThemeFactory {
 
     return TextStyle(
       color: colors(context)[ColorThemeElement.text],
-      fontFamily: fontFamily,
+      fontFamily: _fontFamily,
       fontSize: fontSize,
       fontWeight: FontWeight.w700,
       shadows: <Shadow>[
@@ -70,21 +72,21 @@ class ThemeFactory {
   }
 
   ///
-  /// offset to be used by positioned widgets based on default font size.
+  /// Offset to be used by positioned widgets based on default font size.
   ///
   static double offset(BuildContext context) {
     return (MediaQuery.of(context).size.width / 16) * 0.7;
   }
 
   ///
-  /// text style for the hour part of the clock display.
+  /// Text style for the hour part of the clock display.
   ///
   static TextStyle hourStyle(BuildContext context) {
     return new TextStyle(fontSize: MediaQuery.of(context).size.width / 4);
   }
 
   ///
-  /// text style for the minute part of the clock display.
+  /// Text style for the minute part of the clock display.
   ///
   static TextStyle minuteStyle(BuildContext context) {
     return new TextStyle(fontSize: MediaQuery.of(context).size.width / 5);
@@ -100,18 +102,24 @@ class ThemeFactory {
   }
 
   ///
-  /// text style for the quote text.
+  /// Text style for the quote text. Did not use google_fonts plugin
+  /// here to avoid any network request to be performed.
   ///
   static TextStyle quoteStyle(BuildContext context) {
-    return GoogleFonts.dancingScript(
+    return new TextStyle(
+        fontFamily: _quoteFontFamily,
+        fontWeight: FontWeight.normal,
         fontSize: MediaQuery.of(context).size.width / 31);
   }
 
   ///
-  /// text style for the author part of a quote
+  /// Text style for the author part of a quote. Did not use google_fonts
+  /// plugin here to avoid any network request to be performed.
   ///
   static TextStyle quoteAuthorStyle(BuildContext context) {
-    return GoogleFonts.barlowCondensed(
+    return new TextStyle(
+        fontFamily: _quoteAuthorFontFamily,
+        fontWeight: FontWeight.normal,
         fontSize: MediaQuery.of(context).size.width / 31);
   }
 }

@@ -11,7 +11,6 @@ dependencies:
   flutter_clock_helper:
     path: ../flutter_clock_helper
   cupertino_icons: ^0.1.2
-  google_fonts: ^0.2.0
 
 dev_dependencies:
   flutter_test:
@@ -19,5 +18,12 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  fonts:
+    - family: BarlowCondensed
+      fonts:
+        - asset: google_fonts/BarlowCondensed-Regular.ttf
+    - family: DancingScript
+      fonts:
+        - asset: google_fonts/DancingScript-Regular.ttf
   assets:
     - assets/

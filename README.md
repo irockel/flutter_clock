@@ -18,4 +18,6 @@ which offers free to use images.
 
 Contains free to use weather icons from https://www.iconfinder.com/Makoto_msk.
 
+See Live-Demo on [project's homepage](https://irockel.github.io/flutter_clock).
+
 Released as open source. For License, see [LICENSE](LICENSE) file.
